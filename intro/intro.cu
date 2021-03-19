@@ -29,21 +29,21 @@ const int nThreads = 256;
 
 // The negation kernel with a single block
 __global__
-void negate(float *devArray)
+void negate(float *deviceArray)
 {
   // HANDSON 1.7 Get the index of this block in the grid
   int idx = threadIdx.x;
   // HANDSON 1.8 Negate the value at that index
-  devArray[idx] = -1. * devArray[idx];
+  deviceArray[idx] = -1. * deviceArray[idx];
 }
 
 __global__
-void negateMultiBlock(float *devArray)
+void negateMultiBlock(float *deviceArray)
 {
   // HANDSON 1.9 Calculate the index of this block in the grid
   int idx = threadIdx.x + (blockIdx.x * blockDim.x);
   // HANDSON 1.10 Negate the value at that index
-  devArray[idx] = -1. * devArray[idx];
+  deviceArray[idx] = -1. * deviceArray[idx];
 }
 
 // Host main function
@@ -57,9 +57,9 @@ int main( )
   float *hostOutput = (float *) malloc(sizeChar);
 
   // HANDSON 1.1 Alocate the memory for the array on the device
-  float *devArray;
+  float *deviceArray;
   myCudaCheck(
-    cudaMalloc(&devArray, sizeChar)
+    cudaMalloc(&deviceArray, sizeChar)
              );
 
   // Initialize the input array
@@ -70,7 +70,7 @@ int main( )
 
   // HANDSON 1.2 Copy the data from the host to the device
   myCudaCheck(
-    cudaMemcpy(devArray, hostArray, sizeChar, cudaMemcpyHostToDevice)
+    cudaMemcpy(deviceArray, hostArray, sizeChar, cudaMemcpyHostToDevice)
 	      );
 
   // HANDSON 1.5 Run the kernel on the GPU
@@ -85,7 +85,7 @@ int main( )
 
   // HANDSON 1.3 Copy the results back to the host
   myCudaCheck(
-    cudaMemcpy(hostOutput, devArray, sizeChar, cudaMemcpyDeviceToHost)
+    cudaMemcpy(hostOutput, deviceArray, sizeChar, cudaMemcpyDeviceToHost)
 	      );
 
   // Print the result
@@ -96,7 +96,7 @@ int main( )
 
   // HANDSON 1.4 Free the device arrays
   myCudaCheck(
-    cudaFree(devArray)
+    cudaFree(deviceArray)
 	      );
 
   // Free the host arrays
